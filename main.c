@@ -20,9 +20,86 @@ name, available quantity, unit price, manufacturing date, expiry date, and brand
     char medication_brand[60];
 
   }med_info;
+ 
+
+ void ctr_date(date d);
+ int isExpired(med_info d);
+ void add_medication(med_info m);
+ void display_stock(med_info m[]);  // theres a display bug here some lines is messy and some are not
 
 
-  void ctr_date(date d)  // a function that controls the date given by the user
+
+  int main()
+
+{
+    
+    med_info *m = (med_info *)malloc(sizeof(med_info));
+
+
+
+    strcpy(m[0].medication_name, "paracetamol");
+    m[0].available_quantity = 100;
+    m[0].unit_price = 10;
+    m[0].manufacturing_date[0] = 1;
+    m[0].manufacturing_date[1] = 1;
+    m[0].manufacturing_date[2] = 2024;
+    m[0].expiry_date[0] = 31;
+    m[0].expiry_date[1] = 12;
+    m[0].expiry_date[2] = 2026;
+    strcpy(m[0].medication_brand, "panadol");
+
+    strcpy(m[1].medication_name, "ibuprofen");
+    m[1].available_quantity = 100;
+    m[1].unit_price = 15;
+    m[1].manufacturing_date[0] = 15;
+    m[1].manufacturing_date[1] = 2;
+    m[1].manufacturing_date[2] = 2024;
+    m[1].expiry_date[0] = 31;
+    m[1].expiry_date[1] = 1;
+    m[1].expiry_date[2] = 2027;
+    strcpy(m[1].medication_brand, "advil");
+
+    strcpy(m[2].medication_name, "Cetirizine");
+    m[2].available_quantity = 30;
+    m[2].unit_price = 20;
+    m[2].manufacturing_date[0] = 10;
+    m[2].manufacturing_date[1] = 3;
+    m[2].manufacturing_date[2] = 2024;
+    m[2].expiry_date[0] = 28;
+    m[2].expiry_date[1] = 2;
+    m[2].expiry_date[2] = 2027;
+    strcpy(m[2].medication_brand, "zyrtec");
+
+    strcpy(m[3].medication_name, "Aspirin");
+    m[3].available_quantity = 80;
+    m[3].unit_price = 8;
+    m[3].manufacturing_date[0] = 5;
+    m[3].manufacturing_date[1] = 4;
+    m[3].manufacturing_date[2] = 2024;
+    m[3].expiry_date[0] = 3;
+    m[3].expiry_date[1] = 3;
+    m[3].expiry_date[2] = 2027;
+    strcpy(m[3].medication_brand, "bayer");
+
+    strcpy(m[4].medication_name, "Diphenhydramine");
+    m[4].available_quantity = 60;
+    m[4].unit_price = 12;
+    m[4].manufacturing_date[0] = 30;
+    m[4].manufacturing_date[1] = 4;
+    m[4].manufacturing_date[2] = 2024;
+    m[4].expiry_date[0] = 30;
+    m[4].expiry_date[1] = 4;
+    m[4].expiry_date[2] = 2027;
+    strcpy(m[4].medication_brand, "benadryl");
+
+    display_stock(m);
+
+    free(m);
+    return 0;
+}
+
+
+    void ctr_date(date d)  // a function that controls the date given by the user
   {
     int bool=0;
     while(bool==0)
@@ -111,87 +188,26 @@ void add_medication(med_info m)
   }
 
 
-void display_stock(med_info m[])
+
+void display_stock(med_info m[])  // theres a display bug here some lines is messy and some are not
 {
     printf("Name\tAvailable Quantity\tUnit Price\tManufacturing Date\tExpiry Date\tBrand\n");
     for (int i = 0; i < 5; i++)
     {
-        printf("%s\t%d\t\t%d\t\t%d/%d/%d\t\t%d/%d/%d\t\t%s\n",m[i].medication_name,m[i].available_quantity,m[i].unit_price, m[i].manufacturing_date[0],m[i].manufacturing_date[1], m[i].manufacturing_date[2], m[i].expiry_date[0],m[i].expiry_date[1],m[i].expiry_date[2],m[i].medication_brand);
-               
+        printf("%s\t%d\t\t%d\t\t%d/%d/%d\t\t%d/%d/%d\t\t%s\n",
+               m[i].medication_name,
+               m[i].available_quantity,
+               m[i].unit_price,
+               m[i].manufacturing_date[0],
+               m[i].manufacturing_date[1],
+               m[i].manufacturing_date[2],
+               m[i].expiry_date[0],
+               m[i].expiry_date[1],
+               m[i].expiry_date[2],
+               m[i].medication_brand);
     }
 }
 
-  int main()
-
-{
-    
-    med_info *m = (med_info *)malloc(sizeof(med_info));
-
-
-
-    strcpy(m[0].medication_name, "paracetamol");
-    m[0].available_quantity = 100;
-    m[0].unit_price = 10;
-    m[0].manufacturing_date[0] = 1;
-    m[0].manufacturing_date[1] = 1;
-    m[0].manufacturing_date[2] = 2024;
-    m[0].expiry_date[0] = 31;
-    m[0].expiry_date[1] = 12;
-    m[0].expiry_date[2] = 2026;
-    strcpy(m[0].medication_brand, "panadol");
-
-    strcpy(m[1].medication_name, "ibuprofen");
-    m[1].available_quantity = 100;
-    m[1].unit_price = 15;
-    m[1].manufacturing_date[0] = 15;
-    m[1].manufacturing_date[1] = 2;
-    m[1].manufacturing_date[2] = 2024;
-    m[1].expiry_date[0] = 31;
-    m[1].expiry_date[1] = 1;
-    m[1].expiry_date[2] = 2027;
-    strcpy(m[1].medication_brand, "advil");
-
-    strcpy(m[2].medication_name, "Cetirizine");
-    m[2].available_quantity = 30;
-    m[2].unit_price = 20;
-    m[2].manufacturing_date[0] = 10;
-    m[2].manufacturing_date[1] = 3;
-    m[2].manufacturing_date[2] = 2024;
-    m[2].expiry_date[0] = 28;
-    m[2].expiry_date[1] = 2;
-    m[2].expiry_date[2] = 2027;
-    strcpy(m[2].medication_brand, "zyrtec");
-
-    strcpy(m[3].medication_name, "Aspirin");
-    m[3].available_quantity = 80;
-    m[3].unit_price = 8;
-    m[3].manufacturing_date[0] = 5;
-    m[3].manufacturing_date[1] = 4;
-    m[3].manufacturing_date[2] = 2024;
-    m[3].expiry_date[0] = 3;
-    m[3].expiry_date[1] = 3;
-    m[3].expiry_date[2] = 2027;
-    strcpy(m[3].medication_brand, "bayer");
-
-    strcpy(m[4].medication_name, "Diphenhydramine");
-    m[4].available_quantity = 60;
-    m[4].unit_price = 12;
-    m[4].manufacturing_date[0] = 30;
-    m[4].manufacturing_date[1] = 4;
-    m[4].manufacturing_date[2] = 2024;
-    m[4].expiry_date[0] = 30;
-    m[4].expiry_date[1] = 4;
-    m[4].expiry_date[2] = 2027;
-    strcpy(m[4].medication_brand, "benadryl");
-
-    display_stock(m);
-
-    free(m);
-    return 0;
-}
-
-
-   
 
     
 
