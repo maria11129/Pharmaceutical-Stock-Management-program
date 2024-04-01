@@ -3,21 +3,14 @@
 #include<string.h>
 #include<time.h>
 
-/*1. Add a new medication to the stock:
-- The program should prompt the user to enter the following information for each
-medication:
-- Medication name
-- Available quantity
-- Unit price
-- Manufacturing date (format DD/MM/YYYY)
-- Expiry date (format DD/MM/YYYY)
-- Medication brand
-- Before adding the medication to the stock, the program should verify that the expiry date
-is valid and display a warning if it is near or exceeded.*/
+/*2. Display the list of medications in stock:
+- The program should display all information about each stored medication, including the
+name, available quantity, unit price, manufacturing date, expiry date, and brand.
+*/
 
  typedef int date[3];  // dd/mm/yy
  
-  typedef struct  // a function that hold medication infos
+  typedef struct  // a function that holds medication infos
   {
     char medication_name[60];
     int available_quantity;
@@ -118,14 +111,88 @@ void add_medication(med_info m)
   }
 
 
-
+void display_stock(med_info m[])
+{
+    printf("Name\tAvailable Quantity\tUnit Price\tManufacturing Date\tExpiry Date\tBrand\n");
+    for (int i = 0; i < 5; i++)
+    {
+        printf("%s\t%d\t\t%d\t\t%d/%d/%d\t\t%d/%d/%d\t\t%s\n",m[i].medication_name,m[i].available_quantity,m[i].unit_price, m[i].manufacturing_date[0],m[i].manufacturing_date[1], m[i].manufacturing_date[2], m[i].expiry_date[0],m[i].expiry_date[1],m[i].expiry_date[2],m[i].medication_brand);
+               
+    }
+}
 
   int main()
 
 {
-     
-    med_info m;
+    
+    med_info *m = (med_info *)malloc(sizeof(med_info));
+
+
+
+    strcpy(m[0].medication_name, "paracetamol");
+    m[0].available_quantity = 100;
+    m[0].unit_price = 10;
+    m[0].manufacturing_date[0] = 1;
+    m[0].manufacturing_date[1] = 1;
+    m[0].manufacturing_date[2] = 2024;
+    m[0].expiry_date[0] = 31;
+    m[0].expiry_date[1] = 12;
+    m[0].expiry_date[2] = 2026;
+    strcpy(m[0].medication_brand, "panadol");
+
+    strcpy(m[1].medication_name, "ibuprofen");
+    m[1].available_quantity = 100;
+    m[1].unit_price = 15;
+    m[1].manufacturing_date[0] = 15;
+    m[1].manufacturing_date[1] = 2;
+    m[1].manufacturing_date[2] = 2024;
+    m[1].expiry_date[0] = 31;
+    m[1].expiry_date[1] = 1;
+    m[1].expiry_date[2] = 2027;
+    strcpy(m[1].medication_brand, "advil");
+
+    strcpy(m[2].medication_name, "Cetirizine");
+    m[2].available_quantity = 30;
+    m[2].unit_price = 20;
+    m[2].manufacturing_date[0] = 10;
+    m[2].manufacturing_date[1] = 3;
+    m[2].manufacturing_date[2] = 2024;
+    m[2].expiry_date[0] = 28;
+    m[2].expiry_date[1] = 2;
+    m[2].expiry_date[2] = 2027;
+    strcpy(m[2].medication_brand, "zyrtec");
+
+    strcpy(m[3].medication_name, "Aspirin");
+    m[3].available_quantity = 80;
+    m[3].unit_price = 8;
+    m[3].manufacturing_date[0] = 5;
+    m[3].manufacturing_date[1] = 4;
+    m[3].manufacturing_date[2] = 2024;
+    m[3].expiry_date[0] = 3;
+    m[3].expiry_date[1] = 3;
+    m[3].expiry_date[2] = 2027;
+    strcpy(m[3].medication_brand, "bayer");
+
+    strcpy(m[4].medication_name, "Diphenhydramine");
+    m[4].available_quantity = 60;
+    m[4].unit_price = 12;
+    m[4].manufacturing_date[0] = 30;
+    m[4].manufacturing_date[1] = 4;
+    m[4].manufacturing_date[2] = 2024;
+    m[4].expiry_date[0] = 30;
+    m[4].expiry_date[1] = 4;
+    m[4].expiry_date[2] = 2027;
+    strcpy(m[4].medication_brand, "benadryl");
+
+    display_stock(m);
+
+    free(m);
+    return 0;
+}
+
+
    
+
     
 
 
@@ -136,5 +203,46 @@ void add_medication(med_info m)
 
 
 
-    return 0;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+    printf("enter the medication name : \n");
+    scanf("%s",m[i].medication_name);
+
+    printf("enter the medication brand : \n");
+    scanf("%s",m[i].medication_brand);
+
+    printf("enter the quantity of this medication : \n");
+    scanf("%d",&m[i].available_quantity);
+
+    printf("enter the unit prince : \n");
+    scanf("%d",m[i].unit_price);
+
+    printf("enter the manufacturing date : \n");
+    scanf("%d",&m[i].manufacturing_date);
+
+    printf("enter the expiry date : \n");
+    scanf("%d",&m[i].expiry_date);
+*/
+

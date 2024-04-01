@@ -1,0 +1,42 @@
+Medication Name: Paracetamol
+
+Available Quantity: 100 tablets
+Unit Price: $0.10 per tablet
+Manufacturing Date: January 1, 2024
+Expiry Date: December 31, 2026
+Medication Brand: Panadol
+
+
+Medication Name: Ibuprofen
+
+Available Quantity:100 tablets
+Unit Price: $0.15 per tablet
+Manufacturing Date: February 15, 2024
+Expiry Date: January 31, 2027
+Medication Brand: Advil
+
+
+Medication Name: Cetirizine
+
+Available Quantity: 30 tablets
+Unit Price: $0.20 per tablet
+Manufacturing Date: March 10, 2024
+Expiry Date: February 28, 2027
+Medication Brand: Zyrtec
+
+Medication Name: Aspirin
+
+Available Quantity: 80 tablets
+Unit Price: $0.08 per tablet
+Manufacturing Date: April 5, 2024
+Expiry Date: March 31, 2027
+Medication Brand: Bayer
+
+
+Medication Name: Diphenhydramine
+
+Available Quantity: 60 tablets
+Unit Price: $0.12 per tablet
+Manufacturing Date: May 20, 2024
+Expiry Date: April 30, 2027
+Medication Brand: Benadryl
