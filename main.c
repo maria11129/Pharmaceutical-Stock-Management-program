@@ -9,7 +9,7 @@ name, available quantity, unit price, manufacturing date, expiry date, and brand
 */
 
  typedef int date[3];  // dd/mm/yy
- 
+
   typedef struct  // a function that holds medication infos
   {
     char medication_name[60];
@@ -20,11 +20,13 @@ name, available quantity, unit price, manufacturing date, expiry date, and brand
     char medication_brand[60];
 
   }med_info;
- 
+
 
  void ctr_date(date d);
  int isExpired(med_info d);
  void add_medication(med_info m);
+
+char *format_date(int date[]);
  void display_stock(med_info m[]);  // theres a display bug here some lines is messy and some are not
 
 
@@ -32,7 +34,7 @@ name, available quantity, unit price, manufacturing date, expiry date, and brand
   int main()
 
 {
-    
+
     med_info *m = (med_info *)malloc(sizeof(med_info));
 
 
@@ -99,6 +101,19 @@ name, available quantity, unit price, manufacturing date, expiry date, and brand
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     void ctr_date(date d)  // a function that controls the date given by the user
   {
     int bool=0;
@@ -106,13 +121,13 @@ name, available quantity, unit price, manufacturing date, expiry date, and brand
     {
         printf("give the date:");
         scanf("%d",d[0]);
-    
+
     if((d[0]<=0)|| (d[0]>31))
 {
       printf("the day should be between 1 - 31 \n");
       bool =0;
-}    
-else 
+}
+else
   bool =1;
 
   }
@@ -131,7 +146,7 @@ else
  else bool=1;
 
   }
-     
+
 
      bool =0;
 
@@ -148,10 +163,10 @@ else
      }
      }
 
-  
-int isExpired(med_info d) 
 
-{ 
+int isExpired(med_info d)
+
+{
     time_t now = time(NULL);
     struct tm *local_time = localtime(&now);
 
@@ -174,49 +189,45 @@ int isExpired(med_info d)
 }
 
 void add_medication(med_info m)
+
   {
-    
-   
+
    if (isExpired(m)==0)
    {
     m.available_quantity++;
    }
- 
+
  printf("the available quantity is : %d\n",m.available_quantity);
+
 
 
   }
 
 
 
-void display_stock(med_info m[])  // theres a display bug here some lines is messy and some are not
-{
-    printf("Name\tAvailable Quantity\tUnit Price\tManufacturing Date\tExpiry Date\tBrand\n");
-    for (int i = 0; i < 5; i++)
-    {
-        printf("%s\t%d\t\t%d\t\t%d/%d/%d\t\t%d/%d/%d\t\t%s\n",
-               m[i].medication_name,
-               m[i].available_quantity,
-               m[i].unit_price,
-               m[i].manufacturing_date[0],
-               m[i].manufacturing_date[1],
-               m[i].manufacturing_date[2],
-               m[i].expiry_date[0],
-               m[i].expiry_date[1],
-               m[i].expiry_date[2],
-               m[i].medication_brand);
-    }
+
+
+char *format_date(int date[])
+ {
+  static char formatted_date[11];  // Reusable buffer for formatted date string
+  sprintf(formatted_date, "%02d/%02d/%04d", date[0], date[1], date[2]);
+  return formatted_date;
 }
 
+void display_stock(med_info m[]) {
+  printf("Name\t\tAvailable Quantity\tUnit Price\tManufacturing Date\tExpiry Date\t\tBrand\n");
 
-    
-
-
-
-
-
-
-
+  for (int i = 0; i < 5; i++) {
+    printf("%-20s\t%-3d\t\t%-7d\t%-20s\t%-20s\t\t%s\n",
+           m[i].medication_name,
+           m[i].available_quantity,
+           m[i].unit_price,
+           // Format the date strings for better readability
+           format_date(m[i].manufacturing_date),
+           format_date(m[i].expiry_date),
+           m[i].medication_brand);
+  }
+}
 
 
 
