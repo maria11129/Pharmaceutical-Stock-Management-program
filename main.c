@@ -3,6 +3,8 @@
 #include<string.h>
 #include<time.h>
 
+#define MAX_MEDS 100
+
 
  typedef int date[3];  // dd/mm/yy
 
@@ -18,13 +20,11 @@
   }med_info;
 
 
- void ctr_date(date d);
- int isExpired(med_info d);
- void add_medication(med_info m);
- 
-void format_date(int date[], char formatted_date[]);
- 
- void display_stock(med_info m[]);  // theres a display bug here some lines is messy and some are not
+   void ctr_date(date d);
+  int isExpired(med_info d);
+  void add_medication(med_info m);
+  void format_date(int date[], char formatted_date[]);
+  void display_stock(med_info m[]);  // theres a display bug here some lines is messy and some are not
 
 
 
@@ -91,9 +91,63 @@ void format_date(int date[], char formatted_date[]);
     m[4].expiry_date[2] = 2027;
     strcpy(m[4].medication_brand, "benadryl");
 
+    strcpy(m[5].medication_name, "imane");
+     m[5].available_quantity = 00;
+    m[5].unit_price = 12;
+    m[5].manufacturing_date[0] = 30;
+    m[5].manufacturing_date[1] = 4;
+    m[5].manufacturing_date[2] = 2024;
+    m[5].expiry_date[0] = 30;
+    m[5].expiry_date[1] = 4;
+    m[5].expiry_date[2] = 2027;
+    strcpy(m[5].medication_brand, "benadryl");
     display_stock(m);
 
 
+/*
+3. Search for a medication by the first characters of its name:
+- The user should be able to enter the first characters of the medication name they are
+
+If multiple medications match these characters, the program should provide a list of
+suggestions to the user to choose the desired medication.
+
+*/
+     
+
+printf("\n\n");
+
+  int found_count=0;
+  med_info found_meds[MAX_MEDS]; // Array to store found medications
+  
+    printf("Hello, enter please the first letter of the medication you want to find: ");
+
+    char first_letter;
+    scanf(" %c", &first_letter); // Use space before %c to consume newline from previous input
+
+    for (int i = 0; i < MAX_MEDS; i++)
+     {
+        if (m[i].medication_name[0] == first_letter){ 
+                                                      
+            // Copy entire medication name, not just the first letter
+            strcpy(found_meds[found_count].medication_name, m[i].medication_name);
+            found_count++;
+        }
+    }
+
+    if (found_count > 0) {
+        printf("Found medications:\n");
+
+        for (int i = 0; i < found_count; i++) 
+        {
+            printf("%s\n", found_meds[i].medication_name);
+        }
+    } 
+    
+    
+    
+    else {
+        printf("\nNo medication found starting with '%c'.\n", first_letter);
+    }
 
 
 
@@ -103,32 +157,29 @@ void format_date(int date[], char formatted_date[]);
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    free(m);
+free(m);
     return 0;
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
 
 
 
@@ -262,7 +313,7 @@ void format_date(int date[], char formatted_date[]) {
 void display_stock(med_info m[]) {
   printf("Name\t\tAvailable Quantity\tUp\tMnf Date\t\tExp Date\t\t\tBrand\n");
   printf("\n");
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 6; i++) {
     char manufacturing_date_str[11], expiry_date_str[11];
     format_date(m[i].manufacturing_date, manufacturing_date_str);
     format_date(m[i].expiry_date, expiry_date_str);
