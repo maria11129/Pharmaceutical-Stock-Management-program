@@ -3,10 +3,6 @@
 #include<string.h>
 #include<time.h>
 
-/*2. Display the list of medications in stock:
-- The program should display all information about each stored medication, including the
-name, available quantity, unit price, manufacturing date, expiry date, and brand.
-*/
 
  typedef int date[3];  // dd/mm/yy
 
@@ -25,8 +21,9 @@ name, available quantity, unit price, manufacturing date, expiry date, and brand
  void ctr_date(date d);
  int isExpired(med_info d);
  void add_medication(med_info m);
-
-char *format_date(int date[]);
+ 
+void format_date(int date[], char formatted_date[]);
+ 
  void display_stock(med_info m[]);  // theres a display bug here some lines is messy and some are not
 
 
@@ -96,9 +93,61 @@ char *format_date(int date[]);
 
     display_stock(m);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     free(m);
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -188,6 +237,8 @@ int isExpired(med_info d)
     return 0;  // Item is not expired
 }
 
+
+
 void add_medication(med_info m)
 
   {
@@ -197,37 +248,61 @@ void add_medication(med_info m)
     m.available_quantity++;
    }
 
- printf("the available quantity is : %d\n",m.available_quantity);
-
-
-
-  }
+ printf("the available quantity is : %d\n",m.available_quantity);}
 
 
 
 
-
-char *format_date(int date[])
- {
-  static char formatted_date[11];  // Reusable buffer for formatted date string
+void format_date(int date[], char formatted_date[]) {
   sprintf(formatted_date, "%02d/%02d/%04d", date[0], date[1], date[2]);
-  return formatted_date;
 }
+
+
 
 void display_stock(med_info m[]) {
-  printf("Name\t\tAvailable Quantity\tUnit Price\tManufacturing Date\tExpiry Date\t\tBrand\n");
-
+  printf("Name\t\tAvailable Quantity\tUp\tMnf Date\t\tExp Date\t\t\tBrand\n");
+  printf("\n");
   for (int i = 0; i < 5; i++) {
+    char manufacturing_date_str[11], expiry_date_str[11];
+    format_date(m[i].manufacturing_date, manufacturing_date_str);
+    format_date(m[i].expiry_date, expiry_date_str);
     printf("%-20s\t%-3d\t\t%-7d\t%-20s\t%-20s\t\t%s\n",
-           m[i].medication_name,
-           m[i].available_quantity,
-           m[i].unit_price,
-           // Format the date strings for better readability
-           format_date(m[i].manufacturing_date),
-           format_date(m[i].expiry_date),
-           m[i].medication_brand);
+        m[i].medication_name,
+        m[i].available_quantity,
+        m[i].unit_price,
+        manufacturing_date_str,
+        expiry_date_str,
+        m[i].medication_brand);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
