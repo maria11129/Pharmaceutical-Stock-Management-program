@@ -143,8 +143,6 @@ printf("\n\n");
         }
     } 
     
-    
-    
     else {
         printf("\nNo medication found starting with '%c'.\n", first_letter);
     }
@@ -152,13 +150,25 @@ printf("\n\n");
 
 
 
+ 
+  printf("Enter the number corresponding to your desired medication (or 0 to cancel): ");
+  int user_choice;
+  scanf("%d", &user_choice);
 
 
 
+if (user_choice > 0 && user_choice <= found_count)
 
-
-free(m);
-    return 0;
+ {
+  // User chose a valid suggestion
+  int selected_index = user_choice - 1; // Convert choice to index (0-based)
+  // Access the selected medication using found_meds[selected_index]
+  printf("You selected: %s\n", found_meds[selected_index].medication_name);
+  // Perform actions based on the selected medication (optional)
+} else if (user_choice == 0) {
+  printf("Selection cancelled.\n");
+} else {
+  printf("Invalid choice. Please enter a number between 1 and %d (or 0 to cancel).\n", found_count);
 }
 
 
@@ -169,47 +179,8 @@ free(m);
 
 
 
-
-
-
-
-
-
-
-
-
-
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+free(m);
+return 0;}
 
 
 

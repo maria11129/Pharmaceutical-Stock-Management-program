@@ -21,9 +21,7 @@ name, available quantity, unit price, manufacturing date, expiry date, and brand
 3. Search for a medication by the first characters of its name:
 - The user should be able to enter the first characters of the medication name they are
 
-If multiple medications match these characters, the program should provide a list of
-suggestions to the user to choose the desired medication.
-
+c
 4. Update the available quantity of a medication in stock:
 - The program should allow the user to update the available quantity of a specific
 medication in the stock.
