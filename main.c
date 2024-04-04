@@ -10,7 +10,7 @@
 
   typedef struct  // a function that holds medication infos
   {
-    char medication_name[60];
+    char* medication_name;
     int available_quantity;
     int unit_price;
     date manufacturing_date;
@@ -25,14 +25,20 @@
   void add_medication(med_info m);
   void format_date(int date[], char formatted_date[]);
   void display_stock(med_info m[]);  // theres a display bug here some lines is messy and some are not
+  void update_medication_quantity(med_info* medication, int new_quantity);
 
 
 
   int main()
 
 {
+    med_info* m = (med_info*)malloc(MAX_MEDS * sizeof(med_info));
 
-    med_info *m = (med_info *)malloc(sizeof(med_info));
+   
+     if (m == NULL) {
+        printf("Memory allocation failed\n");
+        return 1;
+    }
 
 
 
@@ -92,7 +98,7 @@
     strcpy(m[4].medication_brand, "benadryl");
 
     strcpy(m[5].medication_name, "imane");
-     m[5].available_quantity = 00;
+     m[5].available_quantity = 19;
     m[5].unit_price = 12;
     m[5].manufacturing_date[0] = 30;
     m[5].manufacturing_date[1] = 4;
@@ -148,28 +154,74 @@ printf("\n\n");
     }
 
 
-
-
- 
   printf("Enter the number corresponding to your desired medication (or 0 to cancel): ");
   int user_choice;
   scanf("%d", &user_choice);
 
 
-
+int selected_index = user_choice - 1;
 if (user_choice > 0 && user_choice <= found_count)
 
  {
   // User chose a valid suggestion
-  int selected_index = user_choice - 1; // Convert choice to index (0-based)
+   // Convert choice to index (0-based)
   // Access the selected medication using found_meds[selected_index]
   printf("You selected: %s\n", found_meds[selected_index].medication_name);
   // Perform actions based on the selected medication (optional)
 } else if (user_choice == 0) {
   printf("Selection cancelled.\n");
 } else {
+  printf("\n\n");
   printf("Invalid choice. Please enter a number between 1 and %d (or 0 to cancel).\n", found_count);
 }
+
+
+
+/*4. Update the available quantity of a medication in stock:
+- The program should allow the user to update the available (quantity) of a specific
+medication in the stock.
+*/
+
+
+
+
+  int desired_choice;
+  int yes = 1;
+  int no = 0;
+  int cancel = -1;
+  int new_quantity = 0;
+
+  printf("\n\n");
+
+  printf("* Do you want to update the quantity of the medication %s (yes: 1, no: 0, cancel: -1): ", found_meds[selected_index].medication_name);
+  scanf("%d", &desired_choice);
+
+  if (desired_choice == yes) {
+
+    printf("The current quantity of this medication is %d. Enter the new quantity: ", found_meds[selected_index].available_quantity);
+    scanf("%d", &new_quantity);
+
+    // Update the medication quantity using a pointer
+    update_medication_quantity(&found_meds[selected_index], new_quantity);
+
+  } else if (desired_choice == no) {
+
+    // ... (rest of your code for choosing another medication remains the same)
+
+  } else {
+    printf("Update cancelled.\n");
+  }
+
+ 
+
+
+
+
+
+
+
+
+
 
 
 
@@ -298,8 +350,18 @@ void display_stock(med_info m[]) {
   }
 }
 
+ 
 
 
+
+void update_medication_quantity(med_info* medication, int new_quantity) {
+  if (medication == NULL) {
+    printf("Error: Medication pointer is NULL\n");
+    return;
+  }
+  medication->available_quantity = new_quantity;
+  printf("Quantity updated successfully!\n");
+}
 
 
 
