@@ -3,7 +3,13 @@
 #include<string.h>
 #include<time.h>
 
+
 #define MAX_MEDS 100
+#define MAX_NAME_LENGTH 60
+#define MAX_BRAND_LENGTH 60
+#define MAX_DAY 31
+#define MAX_MONTH 12
+#define MIN_YEAR 2000
 
 
  typedef int date[3];  // dd/mm/yy
@@ -26,20 +32,41 @@
   void format_date(int date[], char formatted_date[]);
   void display_stock(med_info m[]);  // theres a display bug here some lines is messy and some are not
   void update_medication_quantity(med_info* medication, int new_quantity);
+  void initialize_medication(med_info* m, const char* name, int quantity, int unit_price, int year, int month, int day, const char* brand);
+
 
 
 
   int main()
 
 {
-    med_info* m = (med_info*)malloc(MAX_MEDS * sizeof(med_info));
+   med_info m[MAX_MEDS]; // Use the predefined array instead of allocating memory
 
-   
-     if (m == NULL) {
-        printf("Memory allocation failed\n");
-        return 1;
+ 
+  initialize_medication(&m[0], "paracetamol", 100, 10, 2024, 1, 1, "panadol");
+    initialize_medication(&m[1], "ibuprofen", 100, 15, 2024, 2, 15, "advil");
+    initialize_medication(&m[2], "Cetirizine", 30, 20, 2024, 3, 10, "zyrtec");
+    initialize_medication(&m[3], "Aspirin", 80, 8, 2024, 4, 5, "bayer");
+    initialize_medication(&m[4], "Diphenhydramine", 60, 12, 2024, 4, 30, "benadryl");
+    initialize_medication(&m[5], "Imane", 19, 12, 2024, 4, 30, "benadryl");
+
+
+
+
+
+
+
+
+
+
+
+/*
+    // Initialize medication_name and medication_brand to empty strings
+    for (int i = 0; i < MAX_MEDS; ++i)
+    {
+        m[i].medication_name[0] = '\0';
+        m[i].medication_brand[0] = '\0';
     }
-
 
 
     strcpy(m[0].medication_name, "paracetamol");
@@ -108,6 +135,24 @@
     m[5].expiry_date[2] = 2027;
     strcpy(m[5].medication_brand, "benadryl");
     display_stock(m);
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*
@@ -231,7 +276,6 @@ medication in the stock.
 
 
 
-free(m);
 return 0;}
 
 
@@ -365,7 +409,19 @@ void update_medication_quantity(med_info* medication, int new_quantity) {
 
 
 
-
+void initialize_medication(med_info* m, const char* name, int quantity, int unit_price, int year, int month, int day, const char* brand)
+{
+    strcpy(m->medication_name, name);
+    m->available_quantity = quantity;
+    m->unit_price = unit_price;
+    m->manufacturing_date[0] = day;
+    m->manufacturing_date[1] = month;
+    m->manufacturing_date[2] = year;
+    m->expiry_date[0] = day;
+    m->expiry_date[1] = month;
+    m->expiry_date[2] = year + 2; // Expiry date is two years after manufacturing date
+    strcpy(m->medication_brand, brand);
+}
 
 
 
