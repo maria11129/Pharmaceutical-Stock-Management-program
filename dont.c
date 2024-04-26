@@ -53,20 +53,20 @@ void wel_come(void)
 	time_t t;
 	time(&t);
 	printf("                                                                                                         \n");
-	printf("---------------------------------------------------------------------------------------------------------\n");
+	printf("--------------------------------------------------------------------------------------------------------------\n");
 	printf("\t\t\t\t\t%s",ctime(&t));
-	printf("---------------------------------------------------------------------------------------------------------\n");
+	printf("--------------------------------------------------------------------------------------------------------------\n");
 	printf("|\t\t\t\t\t\t\t\t\t\t\t\t\t\t|\n");
 	printf("|\t\t\t\t\t\t\t\t\t\t\t\t\t\t|\n");
 	printf("|\t\t\t\t\t\t\t\t\t\t\t\t\t\t|\n");
 	printf("|\t\t\t\t\t\t\t\t\t\t\t\t\t\t|\n");
 	printf("|\t\t\t\t\t\t\t\t\t\t\t\t\t\t|\n");
-	printf("|\t\t\t\t==================================\t\t\t\t\t\t|\n");
-	printf("|\t\t\t\t|\t     WELCOME TO \t |\t\t\t\t\t\t|\n");
-	printf("|\t\t\t\t|\tPHARMACEUTICAL STOCK MANAGEMENT SYSTEM\t |\t\t\t\t\t\t|\n");
-	printf("|\t\t\t\t==================================\t\t\t\t\t\t|\n");
-	printf("|\t\t\t\t          Bab Ezzouar      \t\t\t\t\t\t\t|\n");
-	printf("|\t\t\t\t\t     0000 00 00 00\t\t\t\t\t\t\t\t|\n");
+	printf("|\t\t\t\t==================================================\t\t\t\t|\n");
+	printf("|\t\t\t\t|\t       WELCOME TO    \t\t \t |\t\t\t\t|\n");
+	printf("|\t\t\t\t|\tPHARMACEUTICAL STOCK MANAGEMENT SYSTEM\t |\t\t\t\t|\n");
+	printf("|\t\t\t\t==================================================\t\t\t\t|\n");
+	printf("|\t\t\t\t            Bab ezzouar      \t\t\t\t\t\t\t|\n");
+	printf("|\t\t\t\t\t  0000 00 00 00\t\t\t\t\t\t\t|\n");
 	printf("|\t\t\t\t      \"WE BELIEVE IN QUALITY\"\t\t\t\t\t\t\t|\n");
 	printf("|\t\t\t\t\t\t\t\t\t\t\t\t\t\t|\n");
 	printf("|\t\t\t\t\t\t\t\t\t\t\t\t\t\t|\n");
@@ -77,7 +77,7 @@ void wel_come(void)
 	printf("|\t\t\t\t\t\t\t\t\t\t\t\t\t\t|\n");
 	printf("|Press any key to continue.........\t\t\t\t\t\t\t\t\t\t|\n");
 
-	printf("---------------------------------------------------------------------------------------------------------\n");
+	printf("---------------------------------------------------------------------------------------------------------------\n");
 
 getch();
 system("cls");
@@ -90,7 +90,7 @@ int a=0,i=0;
     char uname[10],c=' ';
     char pword[10],code[10];
     char user[10]="user";
-    char pass[10]="nour";
+    char pass[10]="pass";
     do
 {
 
