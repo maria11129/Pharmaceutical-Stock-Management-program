@@ -107,14 +107,12 @@ int a=0,i=0;
 	    i++;
 	}
 	pword[i]='\0';
-	//char code=pword;
 	i=0;
-	//scanf("%s",&pword);
 		if(strcmp(uname,"nour")==0 && strcmp(pword,"maria")==0)
 	{
 	printf("  \n\n\n       WELCOME TO PRODUCT MANAGEMENT SYSTEM !!!! LOGIN IS SUCCESSFUL");
 	printf("\n\n\n\t\t\t\tPress any key to continue...");
-	getch();//holds the screen
+	getch();
 	break;
 	}
 	else
@@ -187,18 +185,24 @@ void menu(void)
 			getch();
 	}
 }
-bool isExpired(int expiry_date[3]) {
-    int current_date[3] = {2024, 4, 27};
+bool checkExpiry(int expiry_date[3]) {
+    time_t now;
+    struct tm *currentTime;
+    time(&now);
+    currentTime = localtime(&now);
 
-    if (expiry_date[2] < current_date[2] ||
-        (expiry_date[2] == current_date[2] && expiry_date[1] < current_date[1]) ||
-        (expiry_date[2] == current_date[2] && expiry_date[1] == current_date[1] && expiry_date[0] < current_date[0])) {
-        return true;
+    int currentYear = currentTime->tm_year + 1900; // Current year
+    int currentMonth = currentTime->tm_mon + 1;    // Current month
+    int currentDay = currentTime->tm_mday;         // Current day
+
+    if (expiry_date[2] < currentYear ||
+        (expiry_date[2] == currentYear && expiry_date[1] < currentMonth) ||
+        (expiry_date[2] == currentYear && expiry_date[1] == currentMonth && expiry_date[0] < currentDay)) {
+        return true; // Expiry date has passed or is near
     }
-    return false;
+    return false; // Expiry date is valid
 }
 
-#include <stdbool.h>
 
 void add_item() {
     FILE *fp;
@@ -206,7 +210,7 @@ void add_item() {
     int index, valid;
     char c;
     bool expired;
-    fp = fopen("NextFile.bin", "a");
+    fp = fopen("NextFile.bin", "wb");
     do {
         system("cls");
         printf("============ Enter Product Detail ============\n");
@@ -308,12 +312,13 @@ void add_item() {
 
         printf("\nExpiry Date (DD/MM/YYYY): ");
         printf("\nYear: ");
-        do {
+       do {
             scanf("%d", &st.expiry_date[2]);
-            if (st.expiry_date[2] < MIN_YEAR || st.expiry_date[2] > 2024) {
-                printf("Invalid year. Please try again: ");
+            if (st.expiry_date[2] < st.manufacturing_date[2]) {
+                printf("Expiry year cannot be before manufacturing year. Please try again: ");
             }
-        } while (st.expiry_date[2] < MIN_YEAR || st.expiry_date[2] > 2024);
+        } while (st.expiry_date[2] < st.manufacturing_date[2]);
+
 
         printf("Month: ");
         do {
@@ -331,11 +336,13 @@ void add_item() {
             }
         } while (st.expiry_date[0] < 1 || st.expiry_date[0] > 31);
 
-        expired = isExpired(st.expiry_date);
+        expired = checkExpiry(st.expiry_date);
 
         if (expired) {
-            printf("Medication is expired. Not added to the list.\n");
-        } else {
+            printf("Warning: Expiry date is near or has passed. Consider checking the medication.\n");
+        }
+        // Add the medication only if it's not expired
+        if (!expired) {
             printf("Medication added to the list.\n");
             fprintf(fp, "\n%s %s %i %i %i %d/%d/%d %d/%d/%d", st.productname, st.productcomp, st.price, st.productid, st.Qnt,
                 st.manufacturing_date[0], st.manufacturing_date[1], st.manufacturing_date[2],
@@ -364,7 +371,7 @@ void search_item() {
     search_key[strcspn(search_key, "\n")] = '\0'; // Remove newline character
     search_key[0] = toupper(search_key[0]);  // Ensure the first character is uppercase
 
-    fp = fopen("NextFile.dat", "r");
+    fp = fopen("NextFile.bin", "r");
     if (fp == NULL) {
         printf("Error opening file.\n");
         return;
@@ -403,7 +410,7 @@ void deleteproduct(void)
 	fgets(target, sizeof(target), stdin);
 	target[strcspn(target, "\n")] = '\0';
 
-	sfile = fopen("NextFile.dat", "r");
+	sfile = fopen("NextFile.bin", "r");
 	if (sfile == NULL) {
 		printf("File not found or cannot be opened.\n");
 		getch();
@@ -411,7 +418,7 @@ void deleteproduct(void)
 		return;
 	}
 
-	tfile = fopen("TempFile.dat", "w");
+	tfile = fopen("TempFile.bin", "w");
 	if (tfile == NULL) {
 		printf("Temporary file cannot be created.\n");
 		fclose(sfile);
@@ -438,15 +445,15 @@ void deleteproduct(void)
 	if (!found)
 	{
 		printf("\n Record not Found");
-		remove("TempFile.dat");
+		remove("TempFile.bin");
 		getch();
 		menu();
 	}
 	else
 	{
 		printf("\n Record deleted");
-		remove("NextFile.dat");
-		rename("TempFile.dat", "NextFile.dat");
+		remove("NextFile.bin");
+		rename("TempFile.bin", "NextFile.bin");
 	}
 
 	printf("\nPress any key to go to Main Menu!");
@@ -459,7 +466,7 @@ void read_item()
 	FILE *f;
 	st st;
 	int i, q;
-	if ((f = fopen("NextFile.dat", "r")) == NULL)
+	if ((f = fopen("NextFile.bin", "r")) == NULL)
 	{
 		gotoxy(10, 3);
 		printf("NO RECORDS");
@@ -526,14 +533,14 @@ void edit_item() {
     int found = 0;
     char name[100], edit;
 
-    fp = fopen("NextFile.dat", "r");
+    fp = fopen("NextFile.bin", "r");
     if (fp == NULL) {
         printf("Error opening file.\n");
         menu();
         return;
     }
 
-    rp = fopen("TempFile.dat", "w");
+    rp = fopen("TempFile.bin", "w");
     if (rp == NULL) {
         printf("Error creating temporary file.\n");
         fclose(fp);
@@ -587,8 +594,8 @@ void edit_item() {
 
     fclose(rp);
     fclose(fp);
-    remove("NextFile.dat");
-    rename("TempFile.dat", "NextFile.dat");
+    remove("NextFile.bin");
+    rename("TempFile.bin", "NextFile.bin");
 
     printf("\nPress any key to go to Main Menu!");
     getch();
