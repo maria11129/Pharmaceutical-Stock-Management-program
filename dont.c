@@ -10,38 +10,25 @@
 #define BKSP 8
 #define SPACE 32
 #define TAB 9
-#define DATE_LENGTH 11
-#define MAX_MEDS 1000
-#define MAX_NAME_LENGTH 60
-#define MAX_BRAND_LENGTH 60
-#define MIN_YEAR 2000
 
-typedef struct {
-    char medication_name[MAX_NAME_LENGTH];
-    int available_quantity;
-    int unit_price;
-    int manufacturing_date[3]; // dd/mm/yy
-    int expiry_date[3]; // dd/mm/yy
-    char medication_brand[MAX_BRAND_LENGTH];
-    int productid;
-} med_info;
+typedef int date[3]; // dd/mm/yy
 
-void append_to_file(const char *filename, const char *data) {
-    FILE *fp = fopen(filename, "a");
-    if (fp == NULL) {
-        printf("Error opening file for appending.\n");
-        return;
-    }
-    fprintf(fp, "%s\n", data);
-    fclose(fp);
-}
+typedef struct
+{
+	char productname[40],productcomp[40],c;
+	int productid;
+	int price;
+	int Qnt;
+	date manufacturing_date;
+    date expiry_date;
+}st;
 
 void wel_come(void);
 void title(void);
 void login();
 void menu(void);
 void title(void);
-void deleteproduct();
+void deleteproduct(void);
 void gotoxy(short x, short y)
 {
 	COORD pos ={x,y};
@@ -50,12 +37,14 @@ void gotoxy(short x, short y)
 
 void add_item();
 void read_item();
-void search_and_select_medication(FILE *fp);
 void search_item();
 void edit_item();
+void main(void)
 
-med_info st;
-
+{
+wel_come();
+login();
+}
 void wel_come(void)
 
 {
@@ -72,7 +61,7 @@ void wel_come(void)
 	printf("|\t\t\t\t\t\t\t\t\t\t\t\t\t\t|\n");
 	printf("|\t\t\t\t==================================\t\t\t\t\t\t|\n");
 	printf("|\t\t\t\t|\t     WELCOME TO \t |\t\t\t\t\t\t|\n");
-	printf("|\t\t\t\t|\tPRODUCT MGMT SYSTEM\t |\t\t\t\t\t\t|\n");
+	printf("|\t\t\t\t|\tPHARMACEUTICAL STOCK MANAGEMENT SYSTEM\t |\t\t\t\t\t\t|\n");
 	printf("|\t\t\t\t==================================\t\t\t\t\t\t|\n");
 	printf("|\t\t\t\t            Address      \t\t\t\t\t\t\t|\n");
 	printf("|\t\t\t\t\t     Number\t\t\t\t\t\t\t\t|\n");
@@ -121,7 +110,7 @@ int a=0,i=0;
 	//scanf("%s",&pword);
 		if(strcmp(uname,"user")==0 && strcmp(pword,"pass")==0)
 	{
-	printf("  \n\n\n       WELCOME TO PHARMACEUTICAL STOCK MANAGEMENT SYSTEM !!!! LOGIN IS SUCCESSFUL");
+	printf("  \n\n\n       WELCOME TO PRODUCT MANAGEMENT SYSTEM !!!! LOGIN IS SUCCESSFUL");
 	printf("\n\n\n\t\t\t\tPress any key to continue...");
 	getch();//holds the screen
 	break;
@@ -148,12 +137,13 @@ int a=0,i=0;
 }
 
 
+
 void menu(void)
 {
 	int choice;
 	system("cls");
 	main:
-	printf("\n======================== PHARMACEUTICAL STOCK MANAGEMENT SYSTEM ========================");
+	printf("\n======================== Pharmaceutical Stock Management System ========================");
 	printf("                                                                                          ");
 	printf("                                                                                          ");
 	printf("\n\t\tPress <1> Add medicine");
@@ -177,286 +167,435 @@ void menu(void)
 			deleteproduct();
 			break;
 		case 3:
-			search_item();
+		search_item();
 			break;
 		case 4:
-			read_item();
+		read_item();
 			break;
 		case 5:
 			edit_item();
 			break;
 		case 6:
-			printf("System Exit");
-			exit(0);
-			break;
-
+		printf("System Exit");
+		exit(0);
+		break;
 
 		default:
-			printf("Invalid Choice! System Exit\n");
+		printf("Invalid Choice! System Exit\n");
 			getch();
 	}
-
 }
 
-void add_item() {
-    int index, valid;
-    char c;
-    FILE *fp;
-    med_info item; // Changed from 'st' to 'item'
+void add_item()
+{
+	int index, valid;
+	char c;
+	int a=0;
+	FILE *fp;
+	st st;
+	do
+	{
+		system("cls");
+		printf("============ Enter Product Detail ============");
+		int ID;
+		fp = fopen("NextFile.dat","a+");//opening file and creating a staff.txt file to append or write
 
-    do {
-        system("cls");
-        printf("============ Enter Product Detail ============\n");
-        int ID;
-        fp = fopen("NextFile.bin", "r"); // Open in read mode to check if file exists
-        if (fp != NULL) {
-            fclose(fp);
-            printf("\nProduct Code\t :");
-            scanf("%i", &ID);
-            fp = fopen("NextFile.bin", "r+"); // Reopen in read/write mode to check for existing product codes
-            while (fscanf(fp, "%s %s %i %i %i %i/%i/%i %i/%i/%i %s",
-                          item.medication_name, item.medication_brand, &item.available_quantity, &item.unit_price, &item.productid,
-                          &item.manufacturing_date[0], &item.manufacturing_date[1], &item.manufacturing_date[2],
-                          &item.expiry_date[0], &item.expiry_date[1], &item.expiry_date[2], item.medication_brand) != EOF) {
-                if (ID == item.productid) {
-                    printf("\n\tTHE PRODUCT CODE ALREADY EXISTS.\n");
-                    fclose(fp); // Close the file after checking
+		if((fp = fopen("NextFile.dat","a+"))!=NULL)//if condition to check file is NULL or not
+		{
+			I:
+			printf("\nProduct Code\t :");
+			scanf("%i",&ID);
+			while(fscanf(fp,"%s %s %i %i %i", st.productname, st.productcomp, &st.price, &st.productid,&st.Qnt)!=EOF)
+			{
+				if(ID == st.productid)
+				{
+					printf("\n\tTHE PRODUCT CODE ALREADY EXIST.\n");
+					goto I;
+				}
+			}
+			st.productid = ID;
+		}
+		else//runs if sfile is empty
+		{
+			printf("\nProduct Code\t :");
+			scanf("%i",&st.productid);
+		}
 
-                }
-            }
-            fseek(fp, 0, SEEK_END); // Move the file pointer to the end of the file for appending
-            item.productid = ID;
-        } else {
-            item.productid = ID;
-        }
+		do
+		{
+			printf("<<<<<<<<<<<<<<Enter Product Detail>>>>>>>>>>>>>");
+			fflush(stdin);
+			printf("\nMedecine Name\t :");
+			gets(st.productname); // get input string
+			st.productname[0]=toupper(st.productname[0]);
+			//iterate for every character in string
+			for (index=0; index<strlen(st.productname); ++index)
+			{	//check if character is valid or not
+				if(isalpha(st.productname[index]))
+					valid = 1;
+				else
+				{
+					valid = 0;
+					break;
+				}
+			}
+			if (!valid)
+			{
+				printf("\n Name contain invalid character. Please 'Enter' again");
+				getch();
 
-        // Initialize medication details
-        strcpy(item.medication_name, "Default Name");
-        item.available_quantity = 0;
-        item.unit_price = 0;
-        item.manufacturing_date[0] = 26; // Day
-        item.manufacturing_date[1] = 4;  // Month
-        item.manufacturing_date[2] = 2024; // Year
-        item.expiry_date[0] = 26; // Day
-        item.expiry_date[1] = 4;  // Month
-        item.expiry_date[2] = 2026; // Year
 
-        // Additional input code for product name, company, price, quantity, etc.
+			}
+		}while(!valid);	//while end here
 
-        char data[100];
-        sprintf(data, "%s %s %i %i %i %i/%i/%i %i/%i/%i %s", item.medication_name, item.medication_brand, item.available_quantity, item.unit_price, item.productid,
-                item.manufacturing_date[0], item.manufacturing_date[1], item.manufacturing_date[2],
-                item.expiry_date[0], item.expiry_date[1], item.expiry_date[2], item.medication_brand);
-        append_to_file("NextFile.bin", data);
-        printf("\nPress 'Enter' to add more items and any other key to go to the main menu");
-    } while ((c = getchar()) == '\r');
-    menu();
+
+		//Product Company
+			do
+		{
+			char productcomp[40];
+			fflush(stdin);
+			printf("\nMedecine brand\t :");
+			gets(st.productcomp); // get input string
+			st.productcomp[0]=toupper(st.productcomp[0]);
+			//iterate for every character in string
+			for (index=0; index<strlen(st.productcomp); ++index)
+			{	//check if character is valid or not
+				if(isalpha(st.productcomp[index]))
+					valid = 1;
+				else
+				{
+					valid = 0;
+					break;
+				}
+			}
+			if (!valid)
+			{
+				printf("\n Name contain invalid character. Please 'Enter' again");
+				getch();
+
+
+			}
+		}while(!valid);
+
+		//productid
+		do
+			{
+				printf("\nPrice [algerian dinar]:");
+				scanf("%i",&st.price);
+				if(st.price<0 || st.price>10000)
+				{
+					printf("\n\tYou Cannot Enter the price limit [0-10000].Re-Enter.");
+				}
+			}while(st.price<0 || st.price>10000);
+
+				do
+			{
+				printf("\nQuantity [1-500]\t:");
+				scanf("%i",&st.Qnt);
+				if(st.Qnt<1 || st.Qnt>500)
+				{
+					printf("\n\tEnter Quantity[1-500] only.Re-Enter.");
+				}
+			}while(st.Qnt<1 || st.Qnt>500);
+
+	//	printf("\nProduct Price\t :");
+	//	scanf("%i", &st.price);
+		//printf("\nProduct ID\t :");
+		//scanf("%i", &st.productid);
+	//	printf("\nProduct Quantity :");
+	//	scanf("%i",&st.Qnt);
+
+		fp=fopen("NextFile.dat","a");
+		fprintf(fp,"\n%s %s %i %i %i", st.productname, st.productcomp,st.price, st.productid,st.Qnt);
+		fclose(fp);
+		printf("\nPress 'Enter' to add more item and any other key to go to main menu");
+
+	}
+	while((c = getch()) =='\r');
+	menu();
 }
 
-void search_and_select_medication(FILE *fp) {
-    printf("\n");
 
-    printf("Enter the name to search or the first letter of the medication you want to find: ");
-    char target[40];
+void search_item(st *medications, int num_items) {
+    char search_key[50];
+    int found = 0;
+    printf("\nEnter the first characters of the medication name to search: ");
     fflush(stdin);
-    gets(target);
+    gets(search_key);
+    search_key[0] = toupper(search_key[0]);  // Ensure the first character is uppercase
 
-    if (strlen(target) == 1) { // search by first letter
-        char first_letter = toupper(target[0]);
-        int found_count = 0;
-
-        printf("\nFound medications:\n");
-        printf("Name\tAvailable Quantity\tUnit Price\tMnf Date\t\tExp Date\t\tBrand\n");
-
-        med_info m;
-        while (fscanf(fp, "%s %s %i %i %i %i/%i/%i %i/%i/%i %s",
-                      m.medication_name, m.medication_brand, &m.available_quantity, &m.unit_price, &m.productid,
-                      &m.manufacturing_date[0], &m.manufacturing_date[1], &m.manufacturing_date[2],
-                      &m.expiry_date[0], &m.expiry_date[1], &m.expiry_date[2], m.medication_brand) != EOF) {
-            if (m.medication_name[0] == first_letter) {
-                char manufacturing_date_str[DATE_LENGTH], expiry_date_str[DATE_LENGTH];
-                sprintf(manufacturing_date_str, "%02d/%02d/%04d", m.manufacturing_date[0], m.manufacturing_date[1], m.manufacturing_date[2]);
-                sprintf(expiry_date_str, "%02d/%02d/%04d", m.expiry_date[0], m.expiry_date[1], m.expiry_date[2]);
-                printf("%-15s\t%-18d\t%-10d\t%-12s\t%-12s\t%-20s\n",
-                       m.medication_name,
-                       m.available_quantity,
-                       m.unit_price,
-                       manufacturing_date_str,
-                       expiry_date_str,
-                       m.medication_brand);
-                found_count++;
-            }
-        }
-
-        if (found_count == 0) {
-            printf("No medication found starting with '%c'.\n", first_letter);
-        }
-    } else { // search by name
-        int found = 0;
-        med_info m;
-        while (fscanf(fp, "%s %s %i %i %i %i/%i/%i %i/%i/%i %s",
-                      m.medication_name, m.medication_brand, &m.available_quantity, &m.unit_price, &m.productid,
-                      &m.manufacturing_date[0], &m.manufacturing_date[1], &m.manufacturing_date[2],
-                      &m.expiry_date[0], &m.expiry_date[1], &m.expiry_date[2], m.medication_brand) != EOF) {
-            if (strcmp(target, m.medication_name) == 0) {
-                found = 1;
-                char manufacturing_date_str[DATE_LENGTH], expiry_date_str[DATE_LENGTH];
-                sprintf(manufacturing_date_str, "%02d/%02d/%04d", m.manufacturing_date[0], m.manufacturing_date[1], m.manufacturing_date[2]);
-                sprintf(expiry_date_str, "%02d/%02d/%04d", m.expiry_date[0], m.expiry_date[1], m.expiry_date[2]);
-                printf("\nRecord found\n");
-                printf("Name\t\t:%s\nAvailable Quantity\t:%d\nUnit Price\t:%d\nMnf Date\t:%s\nExp Date\t:%s\nBrand\t:%s\n",
-                       m.medication_name,
-                       m.available_quantity,
-                       m.unit_price,
-                       manufacturing_date_str,
-                       expiry_date_str,
-                       m.medication_brand);
-            }
-        }
-
-        if (!found) {
-            printf("No record found\n");
+    printf("Search results:\n");
+    for (int i = 0; i < num_items; i++) {
+        if (strstr(medications[i].productname, search_key) != NULL) {
+            printf("Name: %s, Quantity: %d, Price: %.2f\n",
+                   medications[i].productname, medications[i].Qnt, medications[i].price);
+            found = 1;
         }
     }
 
-    printf("\nPress any key to go to Main Menu!");
-    while((getch()) =='\r');
-    menu();
-}
-
-void deleteproduct() {
-    char target[MAX_NAME_LENGTH];
-    int found = 0;
-    FILE *sourceFile, *tempFile;
-
-    if ((sourceFile = fopen("NextFile.bin", "rb")) == NULL) {
-        printf("NO RECORD ADDED.\n");
-        menu();
-    } else {
-        tempFile = fopen("TempFile.bin", "wb+");
-        printf("\nEnter name to Delete: ");
-        scanf("%s", target);
-        target[0] = toupper(target[0]);
-
-        while (fread(&st, sizeof(med_info), 1, sourceFile) == 1) {
-            if (strcmp(target, st.medication_name) != 0) {
-                fwrite(&st, sizeof(med_info), 1, tempFile);
-            } else {
-                found = 1;
-            }
-        }
-
-        fclose(sourceFile);
-        fclose(tempFile);
-
-        if (!found) {
-            printf("\nRecord not Found\n");
-        } else {
-            remove("NextFile.bin");
-            rename("TempFile.bin", "NextFile.bin");
-            printf("\nRecord deleted\n");
-        }
-
-        printf("\nPress any key to go to Main Menu!");
-        getch();
-        menu();
+    if (!found) {
+        printf("No medication found with the provided search key.\n");
     }
+
+    printf("\nPress any key to go to the Main Menu!\n");
+    while (getchar() != '\n');  // Clear input buffer
+    getchar();  // Wait for user input
+    menu();  // Assuming you have a function named menu() to go back to the main menu
 }
 
 
+void deleteproduct(void)
+{
+	char target[40];
+	int found=0;
+	st st;
+	FILE *sfile, *tfile;
+	sfile=fopen("NextFile.bin","r");
+	tfile=fopen("TempFile.bin","w");
+	printf("\n Enter name to Delete: ");
+	fflush(stdin);
+	scanf("%s",target);
+	target[0]=toupper(target[0]);
+	while (fscanf(sfile,"%s %s %i %i %i\n",st.productname,st.productcomp, &st.price,&st.productid,&st.Qnt)!=EOF)
+	{
+		if(strcmp(target,st.productname)==0)
+		{
+			found=1;
+		}
+		else
+		{
+			fprintf(tfile,"%s %s %i %i %i\n", st.productname,st.productcomp, st.price,st.productid,st.Qnt);
+		}
+	}
+			if(!found)
+			{
+				printf("\n Record not Found");
+				getch();
+				menu();
+			}
+			else
+			{
+				printf("\n Record deleted");
+			}
+			fclose(sfile);
+			fclose(tfile);
+			remove("NextFile.bin");
+			rename("TempFile.bin","NextFile.bin");
 
-void read_item() {
-    FILE *fp;
-    med_info m;
-
-    if ((fp = fopen("NextFile.bin", "r")) == NULL) {
-        printf("NO RECORDS\n");
-        printf("\nPress any key to go back to Menu.");
-        getch();
-        menu();
-    } else {
-        system("cls");
-        printf("============================== STOCK DETAILS ==============================\n");
-        printf("=============================================================================\n");
-        printf("Product Name\t\tProduct Price\tProduct Company\tProduct CODE\tProduct Quantity\n");
-        printf("=============================================================================\n");
-
-        while (fscanf(fp, "%s %s %d %d %d %d/%d/%d %d/%d/%d %s\n", m.medication_name, m.medication_brand,
-                      &m.available_quantity, &m.unit_price, &m.productid,
-                      &m.manufacturing_date[0], &m.manufacturing_date[1], &m.manufacturing_date[2],
-                      &m.expiry_date[0], &m.expiry_date[1], &m.expiry_date[2], m.medication_brand) != EOF) {
-            printf("%-15s\t%-13d\t%-15s\t%-12d\t%-15d\n",
-                   m.medication_name, m.unit_price, m.medication_brand, m.productid, m.available_quantity);
-        }
-
-        printf("=============================================================================\n");
-        fclose(fp);
-    }
-
-    printf("\nPress any key to go to Main Menu!");
-    getch();
-    menu();
+			printf("\nPress any key to go to Main Menu!");
+		while((st.c = getch()) =='\r');
+		menu();
 }
 
 
-void edit_item() {
-    int id;
-    FILE *fp, *tempFile;
-    med_info m;
-    int found = 0;
+void read_item()
+{
+	FILE *f;
+	st st;
+	int i, q;
+	if((f=fopen("NextFile.dat","r"))==NULL)
+	{
 
-    if ((fp = fopen("NextFile.bin", "rb")) == NULL) {
-        printf("NO RECORD ADDED.\n");
-        menu();
-    } else {
-        tempFile = fopen("TempFile.bin", "wb+");
-        printf("Enter Product Code for edit: ");
-        scanf("%i", &id);
+		gotoxy(10,3);
+		printf("NO RECORDS");
+		printf("\n\t\tPress any key to go back to Menu.");
+		getch();
+		menu();
 
-        while (fread(&m, sizeof(med_info), 1, fp) == 1) {
-            if (id == m.productid) {
-                found = 1;
-                printf("\n\t***** Record Found *****\n");
-                printf("Product Name     : %s\n", m.medication_name);
-                printf("Product Company  : %s\n", m.medication_brand);
-                printf("Price            : %d\n", m.unit_price);
-                printf("Product Code     : %d\n", m.productid);
-                printf("Product Quantity : %d\n\n", m.available_quantity);
 
-                // Input new data for the product
-                printf("Enter New Product Name: ");
-                scanf("%s", m.medication_name);
-                printf("Enter New Product Company: ");
-                scanf("%s", m.medication_brand);
-                printf("Enter New Price [10-5000] Rupees: ");
-                scanf("%d", &m.unit_price);
-                printf("Enter New Product Quantity: ");
-                scanf("%d", &m.available_quantity);
+	}
+	else
+	{
 
-                printf("\nPress 'y' to save changes or any other key to cancel...");
-                char edit = getch();
-                if (edit == 'y' || edit == 'Y') {
-                    fseek(tempFile, 0, SEEK_END);
-                    fwrite(&m, sizeof(med_info), 1, tempFile);
-                    printf("\n\n\t\tYOUR RECORD IS SUCCESSFULLY EDITED!!!\n");
-                }
-            } else {
-                fwrite(&m, sizeof(med_info), 1, tempFile);
-            }
-        }
+		gotoxy(0,5);
+			for(i=0;i<100;i++)
+		{
+			printf("-");
+		}
+		gotoxy(5,6);
+		printf("Product Name");
+		gotoxy(25,6);
+		printf("Product Price");
+		gotoxy(40,6);
+		printf("Product Company");
+		gotoxy(60,6);
+		printf("Product CODE");
+		gotoxy(80,6);
+		printf("Product Quantity\n");
 
-        fclose(fp);
-        fclose(tempFile);
+		for(i=0;i<100;i++)
+		{
+			printf("-");
+		}
+		q=8;
+		while(fscanf(f,"%s %s %i %i %i\n", st.productname,st.productcomp, &st.price, &st.productid,&st.Qnt)!=EOF)
+		{
+			gotoxy(5,q);
+			printf("%s",st.productname);
+			gotoxy(25,q);
+			printf("%i",st.price);
+			gotoxy(40,q);
+			printf("%s",st.productcomp);
+			gotoxy(60,q);
+			printf("%i",st.productid);
+			gotoxy(80,q);
+			printf("%i",st.Qnt);
 
-        if (!found) {
-            printf("\n\nTHIS PRODUCT DOESN'T EXIST!!!!\n");
-        }
+			q++;
+		}
+		printf("\n");
+		for(i=0;i<100;i++)
+			printf("-");
+	}
+	fclose(f);
 
-        remove("NextFile.bin");
-        rename("TempFile.bin", "NextFile.bin");
+	printf("\nPress any key to go to Main Menu!");
+		//while((st.c = getch()) =='\r');
+		getch();
+		menu();
+}
 
-        printf("\nPress any key to go to Main Menu!");
-        getch();
-        menu();
-    }
+void edit_item()
+{
+	int index, valid;
+	st st;
+	char target[40];
+	FILE *fp, *rp;
+	int a=0;
+	int id;
+	char edit;
+	long int size=sizeof(st);
+	if((fp=fopen("NextFile.dat","r+"))==NULL)
+	{
+		printf("NO RECORD ADDED.");
+		menu();
+	}
+	else
+	{
+		rp = fopen("TempFile.dat","a");
+		system("cls");
+		printf("Enter Product Code for edit:");
+		scanf("%i",&id);
+		fflush(stdin);
+		while(fscanf(fp,"%s %s %i %i %i\n", st.productname,st.productcomp, &st.price, &st.productid,&st.Qnt)!=EOF)
+		{
+			if(id==st.productid)
+			{
+
+				a=1;
+				printf("\n\t*****  Record Found  *****");
+				printf("\nProduct Name\t\t: %s",st.productname);
+				printf("\nProduct Company\t\t: %s",st.productcomp);
+				printf("\nPrice\t\t\t: %i",st.price);
+				printf("\nProduct Code\t\t: %i",st.productid);
+				printf("\nProduct Quantity\t:%i",st.Qnt);
+
+				printf("\n\n\t*** New Record ***");
+			do
+				{
+
+					fflush(stdin);
+					printf("\nNew Product Name\t\t: ");
+					gets(st.productname); // get input string
+					st.productname[0]=toupper(st.productname[0]);
+					//iterate for every character in string
+					for (index=0; index<strlen(st.productname); ++index)
+					{	//check if character is valid or not
+						if(isalpha(st.productname[index]))
+							valid = 1;
+						else
+						{
+							valid = 0;
+							break;
+						}
+					}
+					if (!valid)
+					{
+						printf("\n Name contain invalid character. Please 'Enter' again");
+						getch();
+
+
+					}
+				}while(!valid);	//while end here
+
+
+				//Product Company
+				do
+				{
+					char productcomp[40];
+					fflush(stdin);
+					printf("\nNew Product Company\t\t:");
+					gets(st.productcomp); // get input string
+					st.productcomp[0]=toupper(st.productcomp[0]);
+					//iterate for every character in string
+					for (index=0; index<strlen(st.productcomp); ++index)
+					{	//check if character is valid or not
+						if(isalpha(st.productcomp[index]))
+							valid = 1;
+						else
+						{
+							valid = 0;
+							break;
+						}
+					}
+					if (!valid)
+					{
+						printf("\n Name contain invalid character. Please 'Enter' again");
+						getch();
+
+
+					}
+				}while(!valid);
+
+					do
+			{
+				printf("\nNew Price [10-5000]Rupees:");
+				scanf("%i",&st.price);
+				if(st.price<10 || st.price>5000)
+				{
+					printf("\n\tYou Cannot Enter the price limit [10-5000].Re-Enter.");
+				}
+			}while(st.price<10 || st.price>5000);
+
+				printf("\nEnter New Product Code\t\t:");
+				scanf("%i",&st.productid);
+
+				do
+			{
+				printf("\nNew Quantity [1-500]\t:");
+				scanf("%i",&st.Qnt);
+				if(st.Qnt<1 || st.Qnt>500)
+				{
+					printf("\n\tEnter New Quantity[1-500] only.Re-Enter.");
+				}
+			}while(st.Qnt<1 || st.Qnt>500);
+
+
+				printf("Press 'y' to edit the existing record or any key to cancel...");
+				edit=getche();
+				if(edit=='y' || edit=='Y')
+				{
+					fprintf(rp,"%s %s %i %i %i\n", st.productname, st.productcomp, st.price, st.productid,st.Qnt);
+					fflush(stdin);
+					printf("\n\n\t\tYOUR RECORD IS SUCCESSFULLY EDITED!!!");
+				}
+			}
+			else
+			{
+				fprintf(rp,"%s %s %i %i %i\n", st.productname, st.productcomp, st.price, st.productid,st.Qnt);
+				fflush(stdin);
+			}
+
+		}
+		if(!a)
+		{
+			printf("\n\nTHIS PRODUCT DOESN'T EXIST!!!!");
+		}
+		fclose(rp);
+		fclose(fp);
+		remove("NextFile.dat");
+		rename("TempFile.dat","NextFile.dat");
+		getch();
+	}
+	menu();
 }
