@@ -89,8 +89,8 @@ void login()
 int a=0,i=0;
     char uname[10],c=' ';
     char pword[10],code[10];
-    char user[10]="user";
-    char pass[10]="pass";
+    char user[10]="nour";
+    char pass[10]="maria";
     do
 {
 
@@ -110,7 +110,7 @@ int a=0,i=0;
 	//char code=pword;
 	i=0;
 	//scanf("%s",&pword);
-		if(strcmp(uname,"user")==0 && strcmp(pword,"pass")==0)
+		if(strcmp(uname,"nour")==0 && strcmp(pword,"maria")==0)
 	{
 	printf("  \n\n\n       WELCOME TO PRODUCT MANAGEMENT SYSTEM !!!! LOGIN IS SUCCESSFUL");
 	printf("\n\n\n\t\t\t\tPress any key to continue...");
