@@ -6,6 +6,7 @@
 #include<windows.h>
 #include<time.h>
 #include <stdbool.h>
+#include <errno.h>
 
 #define ENTER 13
 #define BKSP 8
@@ -349,13 +350,86 @@ void add_item() {
                 st.expiry_date[0], st.expiry_date[1], st.expiry_date[2]);
         }
 
-        fclose(fp);
 
         printf("\nPress 'Enter' to add more items or any other key to go to the main menu.\n");
 
     }while ((c = getch()) == '\r');
+     fclose(fp);
 
     menu();
+}
+
+void deleteproduct(void)
+{
+    char target[40];
+    int found = 0;
+    st st;
+    FILE *sfile, *tfile;
+
+    printf("\nEnter product name to delete: ");
+    scanf("%s", target);
+
+    sfile = fopen("NextFile.bin", "rb");
+    if (sfile == NULL) {
+        printf("Error: File not found or cannot be opened.\n");
+        menu();
+        return;
+    }
+
+    tfile = fopen("TempFile.bin", "wb");
+    if (tfile == NULL) {
+        printf("Error: Temporary file cannot be created.\n");
+        fclose(sfile);
+        menu();
+        return;
+    }
+
+    while (fread(&st, sizeof(st), 1, sfile) == 1)
+    {
+        if (strcmp(target, st.productname) == 0)
+        {
+            found = 1;
+            continue; // Skip writing the record to the temporary file
+        }
+        fwrite(&st, sizeof(st), 1, tfile);
+    }
+
+    fclose(sfile);
+    fclose(tfile);
+
+    if (!found)
+    {
+        printf("\nRecord not found.\n");
+        remove("TempFile.bin");
+    }
+    else
+    {
+        printf("\nRecord deleted.\n");
+        remove("NextFile.bin");
+        rename("TempFile.bin", "NextFile.bin");
+
+        // Check if the file is empty
+        FILE *checkEmpty = fopen("NextFile.bin", "rb");
+        if (checkEmpty != NULL)
+        {
+            fseek(checkEmpty, 0, SEEK_END);
+            if (ftell(checkEmpty) == 0)
+            {
+                printf("Warning: File is now empty.\n");
+                fclose(checkEmpty);
+                remove("NextFile.bin");
+            }
+            else
+            {
+                fclose(checkEmpty);
+            }
+        }
+    }
+
+    printf("\nPress Enter to go back to Main Menu...");
+    getchar(); // Wait for Enter key press
+    getchar(); // Consume Enter key press
+    menu(); // Return to the main menu
 }
 
 
@@ -395,70 +469,6 @@ void search_item() {
     while (getchar() != '\n');
     getchar();
     menu();
-}
-
-
-void deleteproduct(void)
-{
-	char target[40];
-	int found = 0;
-	st st;
-	FILE *sfile, *tfile;
-
-	printf("\n Enter name to Delete: ");
-	fflush(stdin);
-	fgets(target, sizeof(target), stdin);
-	target[strcspn(target, "\n")] = '\0';
-
-	sfile = fopen("NextFile.bin", "r");
-	if (sfile == NULL) {
-		printf("File not found or cannot be opened.\n");
-		getch();
-		menu();
-		return;
-	}
-
-	tfile = fopen("TempFile.bin", "w");
-	if (tfile == NULL) {
-		printf("Temporary file cannot be created.\n");
-		fclose(sfile);
-		getch();
-		menu();
-		return;
-	}
-
-	while (fscanf(sfile, "%s %s %i %i %i\n", st.productname, st.productcomp, &st.price, &st.productid, &st.Qnt) != EOF)
-	{
-		if (strcmp(target, st.productname) == 0)
-		{
-			found = 1;
-		}
-		else
-		{
-			fprintf(tfile, "%s %s %i %i %i\n", st.productname, st.productcomp, st.price, st.productid, st.Qnt);
-		}
-	}
-
-	fclose(sfile);
-	fclose(tfile);
-
-	if (!found)
-	{
-		printf("\n Record not Found");
-		remove("TempFile.bin");
-		getch();
-		menu();
-	}
-	else
-	{
-		printf("\n Record deleted");
-		remove("NextFile.bin");
-		rename("TempFile.bin", "NextFile.bin");
-	}
-
-	printf("\nPress any key to go to Main Menu!");
-	while ((st.c = getch()) == '\r');
-	menu();
 }
 
 void read_item()
