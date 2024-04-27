@@ -376,14 +376,14 @@ void deleteproduct(void) {
     printf("\nEnter product name to delete: ");
     scanf("%s", target);
 
-    sfile = fopen("NextFile.bin", "rb");
+    sfile = fopen("NextFile.bin", "ab");
     if (sfile == NULL) {
         printf("Error: File not found or cannot be opened.\n");
         menu();
         return;
     }
 
-    tfile = fopen("TempFile.bin", "wb+");
+    tfile = fopen("TempFile.bin", "wb");
     if (tfile == NULL) {
         printf("Error: Temporary file cannot be created.\n");
         fclose(sfile);
@@ -392,17 +392,15 @@ void deleteproduct(void) {
     }
 
     while (fread(&st, sizeof(st), 1, sfile) == 1) {
-        if (strcmp(target, st.productname) == 0) {
-            found = 1;
-            continue; // Skip writing the record to the temporary file
+        if (strcmp(tolower(target), tolower(st.productname)) != 0) {
+             fwrite(&st, sizeof(st), 1, tfile);
+             found = 1;
         }
-        fwrite(&st, sizeof(st), 1, tfile);
     }
-
-    fclose(sfile);
     fclose(tfile);
+     read_item(tfile);
 
-    if (!found) {
+    if (found == 1) {
         printf("\nRecord not found.\n");
         remove("TempFile.bin");
     } else {
@@ -410,6 +408,7 @@ void deleteproduct(void) {
         remove("NextFile.bin");
         rename("TempFile.bin", "NextFile.bin");
 
+        //just to notif in case the stock is at 0 again
         FILE *checkEmpty = fopen("NextFile.bin", "rb");
         if (checkEmpty != NULL) {
             fseek(checkEmpty, 0, SEEK_END);
@@ -422,6 +421,9 @@ void deleteproduct(void) {
             }
         }
     }
+
+    fclose(sfile);
+    fclose(tfile);
 
     printf("\nPress Enter to go back to Main Menu...");
     getchar();
