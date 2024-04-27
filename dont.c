@@ -210,7 +210,7 @@ void add_item() {
     int index, valid;
     char c;
     bool expired;
-    fp = fopen("NextFile.bin", "wb");
+    fp = fopen("NextFile.bin", "ab");
     do {
         system("cls");
         printf("============ Enter Product Detail ============\n");
