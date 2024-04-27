@@ -6,7 +6,7 @@
 #include<windows.h>
 #include<time.h>
 #include <stdbool.h>
-#include <errno.h>
+
 
 #define ENTER 13
 #define BKSP 8
@@ -14,7 +14,6 @@
 #define TAB 9
 #define MIN_YEAR 2000
 
-typedef int date[3]; // dd/mm/yy
 
 typedef struct
 {
@@ -22,8 +21,8 @@ typedef struct
 	int productid;
 	int price;
 	int Qnt;
-	date manufacturing_date;
-    date expiry_date;
+	int manufacturing_date[3];
+    int expiry_date[3];
 }st;
 
 void wel_come(void);
@@ -42,7 +41,7 @@ void add_item();
 void read_item();
 void search_item();
 void edit_item();
-void main(void)
+int main(void)
 
 {
 wel_come();
@@ -66,8 +65,8 @@ void wel_come(void)
 	printf("|\t\t\t\t|\t       WELCOME TO    \t\t \t |\t\t\t\t|\n");
 	printf("|\t\t\t\t|\tPHARMACEUTICAL STOCK MANAGEMENT SYSTEM\t |\t\t\t\t|\n");
 	printf("|\t\t\t\t==================================================\t\t\t\t|\n");
-	printf("|\t\t\t\t            Bab ezzouar      \t\t\t\t\t\t\t|\n");
-	printf("|\t\t\t\t\t  0000 00 00 00\t\t\t\t\t\t\t|\n");
+	printf("|\t\t\t\t           Bab ezzouar      \t\t\t\t\t\t\t|\n");
+	printf("|\t\t\t\t\t  0000 00 00 00\t\t\t\t\t\t\t\t|\n");
 	printf("|\t\t\t\t      \"WE BELIEVE IN QUALITY\"\t\t\t\t\t\t\t|\n");
 	printf("|\t\t\t\t\t\t\t\t\t\t\t\t\t\t|\n");
 	printf("|\t\t\t\t\t\t\t\t\t\t\t\t\t\t|\n");
@@ -205,20 +204,28 @@ bool checkExpiry(int expiry_date[3]) {
 }
 
 
+bool is_leap_year(int year) {
+    return ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0);
+}
+
 void add_item() {
     FILE *fp;
     st st;
     int index, valid;
     char c;
+    const int days_in_month[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     bool expired;
     fp = fopen("NextFile.bin", "ab");
+
+
+
     do {
         system("cls");
         printf("============ Enter Product Detail ============\n");
         do
 		{
 			fflush(stdin);
-			printf("\nm=Medecine Name\t :");
+			printf("\nMedecine Name\t :");
 			gets(st.productname); // get input string
 			st.productname[0]=toupper(st.productname[0]);
 			//iterate for every character in string
@@ -245,7 +252,6 @@ void add_item() {
         // Input validation for Medicine Brand
         do
 		{
-			char productcomp[40];
 			fflush(stdin);
 			printf("\nMedecine brand\t :");
 			gets(st.productcomp); // get input string
@@ -267,7 +273,7 @@ void add_item() {
 			}
 		}while(!valid);
 
-        // Input validation for Price
+
         do {
             printf("\nPrice [Algerian Dinar]: ");
             scanf("%i", &st.price);
@@ -276,16 +282,15 @@ void add_item() {
             }
         } while (st.price < 0 || st.price > 10000);
 
-        // Input validation for Quantity
         do {
-            printf("\nQuantity [1-500]: ");
+            printf("\nQuantity: ");
             scanf("%i", &st.Qnt);
-            if (st.Qnt < 1 || st.Qnt > 500) {
-                printf("Invalid quantity. Please enter a quantity between 1 and 500.\n");
+            if (st.Qnt < 1) {
+                printf("Invalid quantity. Please enter a quantity > 0.\n");
             }
-        } while (st.Qnt < 1 || st.Qnt > 500);
+        } while (st.Qnt < 1);
 
-        // Input validation for Manufacturing Date
+
         printf("\nManufacturing Date (DD/MM/YYYY): ");
         printf("\nYear: ");
         do {
@@ -306,10 +311,11 @@ void add_item() {
         printf("Day: ");
         do {
             scanf("%d", &st.manufacturing_date[0]);
-            if (st.manufacturing_date[0] < 1 || st.manufacturing_date[0] > 31) {
+        if (st.manufacturing_date[0] < 1 || st.manufacturing_date[0] > days_in_month[st.manufacturing_date[1]]) {
+        if (st.manufacturing_date[1] == 2 && is_leap_year(st.manufacturing_date[2]) && st.manufacturing_date[0] == 29) {
                 printf("Invalid day. Please try again: ");
             }
-        } while (st.manufacturing_date[0] < 1 || st.manufacturing_date[0] > 31);
+        }} while (st.manufacturing_date[0] < 1 || st.manufacturing_date[0] > days_in_month[st.manufacturing_date[1]]);
 
         printf("\nExpiry Date (DD/MM/YYYY): ");
         printf("\nYear: ");
@@ -332,20 +338,22 @@ void add_item() {
         printf("Day: ");
         do {
             scanf("%d", &st.expiry_date[0]);
-            if (st.expiry_date[0] < 1 || st.expiry_date[0] > 31) {
+
+            if (st.expiry_date[0] < 1 || st.expiry_date[0] > days_in_month[st.expiry_date[1]]) {
+        if (st.expiry_date[1] == 2 && is_leap_year(st.expiry_date[2]) && st.expiry_date[0] == 29) {
                 printf("Invalid day. Please try again: ");
             }
-        } while (st.expiry_date[0] < 1 || st.expiry_date[0] > 31);
+        }} while (st.expiry_date[0] < 1 || st.expiry_date[0] > days_in_month[st.expiry_date[1]]);
+
 
         expired = checkExpiry(st.expiry_date);
 
         if (expired) {
             printf("Warning: Expiry date is near or has passed. Consider checking the medication.\n");
         }
-        // Add the medication only if it's not expired
         if (!expired) {
             printf("Medication added to the list.\n");
-            fprintf(fp, "\n%s %s %i %i %i %d/%d/%d %d/%d/%d", st.productname, st.productcomp, st.price, st.productid, st.Qnt,
+            fprintf(fp, "\n%s %s %i %i %d/%d/%d %d/%d/%d", st.productname, st.productcomp, st.price, st.Qnt,
                 st.manufacturing_date[0], st.manufacturing_date[1], st.manufacturing_date[2],
                 st.expiry_date[0], st.expiry_date[1], st.expiry_date[2]);
         }
@@ -355,12 +363,11 @@ void add_item() {
 
     }while ((c = getch()) == '\r');
      fclose(fp);
+     menu();
+    }
 
-    menu();
-}
 
-void deleteproduct(void)
-{
+void deleteproduct(void) {
     char target[40];
     int found = 0;
     st st;
@@ -376,7 +383,7 @@ void deleteproduct(void)
         return;
     }
 
-    tfile = fopen("TempFile.bin", "wb");
+    tfile = fopen("TempFile.bin", "wb+");
     if (tfile == NULL) {
         printf("Error: Temporary file cannot be created.\n");
         fclose(sfile);
@@ -384,10 +391,8 @@ void deleteproduct(void)
         return;
     }
 
-    while (fread(&st, sizeof(st), 1, sfile) == 1)
-    {
-        if (strcmp(target, st.productname) == 0)
-        {
+    while (fread(&st, sizeof(st), 1, sfile) == 1) {
+        if (strcmp(target, st.productname) == 0) {
             found = 1;
             continue; // Skip writing the record to the temporary file
         }
@@ -397,39 +402,31 @@ void deleteproduct(void)
     fclose(sfile);
     fclose(tfile);
 
-    if (!found)
-    {
+    if (!found) {
         printf("\nRecord not found.\n");
         remove("TempFile.bin");
-    }
-    else
-    {
+    } else {
         printf("\nRecord deleted.\n");
         remove("NextFile.bin");
         rename("TempFile.bin", "NextFile.bin");
 
-        // Check if the file is empty
         FILE *checkEmpty = fopen("NextFile.bin", "rb");
-        if (checkEmpty != NULL)
-        {
+        if (checkEmpty != NULL) {
             fseek(checkEmpty, 0, SEEK_END);
-            if (ftell(checkEmpty) == 0)
-            {
+            if (ftell(checkEmpty) == 0) {
                 printf("Warning: File is now empty.\n");
                 fclose(checkEmpty);
                 remove("NextFile.bin");
-            }
-            else
-            {
+            } else {
                 fclose(checkEmpty);
             }
         }
     }
 
     printf("\nPress Enter to go back to Main Menu...");
-    getchar(); // Wait for Enter key press
-    getchar(); // Consume Enter key press
-    menu(); // Return to the main menu
+    getchar();
+    getchar();
+    menu();
 }
 
 
@@ -442,8 +439,8 @@ void search_item() {
     printf("\nEnter the first characters of the medication name to search: ");
     fflush(stdin);
     fgets(search_key, sizeof(search_key), stdin);
-    search_key[strcspn(search_key, "\n")] = '\0'; // Remove newline character
-    search_key[0] = toupper(search_key[0]);  // Ensure the first character is uppercase
+    search_key[strcspn(search_key, "\n")] = '\0';
+    search_key[0] = toupper(search_key[0]);
 
     fp = fopen("NextFile.bin", "r");
     if (fp == NULL) {
@@ -453,7 +450,7 @@ void search_item() {
 
     printf("Search results:\n");
     while (fscanf(fp, "%s %s %i %i %i\n", st.productname, st.productcomp, &st.price, &st.productid, &st.Qnt) != EOF) {
-        if (strstr(st.productname, search_key) != NULL) {
+        if (strstr( tolower(st.productname), search_key) != NULL) {
             printf("Name: %s, Quantity: %d, Price: %d\n", st.productname, st.Qnt, st.price);
             found = 1;
         }
@@ -509,7 +506,7 @@ void read_item()
 			printf("-");
 		}
 		q = 8;
-		while (fscanf(f, "%s %s %i %i %i %d/%d/%d %d/%d/%d", st.productname, st.productcomp, &st.price, &st.productid, &st.Qnt,
+		while (fscanf(f, "%s %s %i %i %d/%d/%d %d/%d/%d", st.productname, st.productcomp, &st.price, &st.Qnt,
 					  &st.manufacturing_date[0], &st.manufacturing_date[1], &st.manufacturing_date[2],
 					  &st.expiry_date[0], &st.expiry_date[1], &st.expiry_date[2]) != EOF)
 		{
@@ -550,6 +547,15 @@ void edit_item() {
         return;
     }
 
+
+    if (fgetc(fp) == EOF) {
+        printf("Error: File is empty.\n");
+        fclose(fp);
+        menu();
+        return;
+    }
+    rewind(fp);
+
     rp = fopen("TempFile.bin", "w");
     if (rp == NULL) {
         printf("Error creating temporary file.\n");
@@ -563,49 +569,48 @@ void edit_item() {
     scanf("%s", name);
     fflush(stdin);
 
-    while (fscanf(fp, "%s %s %d %d %d\n", st.productname, st.productcomp, &st.price, &st.productid, &st.Qnt) != EOF) {
-        if (strcmp(name, st.productname) == 0) {
-            found = 1;
-            printf("\n\t*****  Record Found  *****");
-            printf("\nProduct Name\t\t: %s", st.productname);
-            printf("\nProduct Company\t\t: %s", st.productcomp);
-            printf("\nPrice\t\t\t: %d", st.price);
-            printf("\nProduct Code\t\t: %d", st.productid);
-            printf("\nProduct Quantity\t: %d", st.Qnt);
-            printf("\n\n\t*** Edit Quantity ***");
+    while (!feof(fp)) {
+        if (fscanf(fp, "%s %s %d %d\n", st.productname, st.productcomp, &st.price, &st.Qnt) == 4) {
+            if (strcmp(name, st.productname) == 0) {
+                found = 1;
+                printf("\n\t*****  Record Found  *****");
+                printf("\nProduct Name\t\t: %s", st.productname);
+                printf("\nProduct Company\t\t: %s", st.productcomp);
+                printf("\nPrice\t\t\t: %d", st.price);
+                printf("\nProduct Quantity\t: %d", st.Qnt);
+                printf("\n\n\t*** Edit Quantity ***");
 
-            printf("\nEnter New Quantity [1-500]: ");
-            scanf("%d", &st.Qnt);
-            if (st.Qnt < 1 || st.Qnt > 500) {
-                printf("\nQuantity should be between 1 and 500. Re-enter.\n");
-                continue; // Continue editing until a valid quantity is entered
-            }
+                printf("\nEnter New Quantity : ");
+                scanf("%d", &st.Qnt);
+                if (st.Qnt < 0) {
+                    printf("\nQuantity should be non-negative. Re-enter.\n");
+                    continue;
+                }
 
-            printf("Press 'y' to confirm the quantity change or any key to cancel...");
-            edit = getch();
-            if (edit == 'y' || edit == 'Y') {
-                fprintf(rp, "%s %s %d %d %d\n", st.productname, st.productcomp, st.price, st.productid, st.Qnt);
-                fflush(stdin);
-                printf("\n\n\t\tQUANTITY UPDATED SUCCESSFULLY!!!");
+                printf("Press 'y' to confirm the quantity change or any key to cancel...");
+                edit = getch();
+                if (edit == 'y' || edit == 'Y') {
+                    fprintf(rp, "%s %s %d %d\n", st.productname, st.productcomp, st.price, st.Qnt);
+                    printf("\n\n\t\tQUANTITY UPDATED SUCCESSFULLY!!!");
+                } else {
+                    fprintf(rp, "%s %s %d %d\n", st.productname, st.productcomp, st.price, st.Qnt);
+                    printf("\n\n\t\tQUANTITY NOT UPDATED!!!");
+                }
             } else {
-                fprintf(rp, "%s %s %d %d %d\n", st.productname, st.productcomp, st.price, st.productid, st.Qnt);
-                fflush(stdin);
-                printf("\n\n\t\tQUANTITY NOT UPDATED!!!");
+                fprintf(rp, "%s %s %d %d\n", st.productname, st.productcomp, st.price, st.Qnt);
             }
-        } else {
-            fprintf(rp, "%s %s %d %d %d\n", st.productname, st.productcomp, st.price, st.productid, st.Qnt);
-            fflush(stdin);
         }
-    }
-
-    if (!found) {
-        printf("\n\nTHIS PRODUCT DOESN'T EXIST!!!!");
     }
 
     fclose(rp);
     fclose(fp);
-    remove("NextFile.bin");
-    rename("TempFile.bin", "NextFile.bin");
+
+    if (!found) {
+        printf("\n\nTHIS PRODUCT DOESN'T EXIST!!!!");
+    } else {
+        remove("NextFile.bin");
+        rename("TempFile.bin", "NextFile.bin");
+    }
 
     printf("\nPress any key to go to Main Menu!");
     getch();
