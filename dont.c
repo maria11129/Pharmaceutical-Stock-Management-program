@@ -291,7 +291,7 @@ void add_item() {
         } while (st.Qnt < 1);
 
 
-        printf("\nManufacturing Date (DD/MM/YYYY): ");
+        printf("\nManufacturing Date : ");
         printf("\nYear: ");
         do {
             scanf("%d", &st.manufacturing_date[2]);
@@ -317,7 +317,7 @@ void add_item() {
             }
         }} while (st.manufacturing_date[0] < 1 || st.manufacturing_date[0] > days_in_month[st.manufacturing_date[1]]);
 
-        printf("\nExpiry Date (DD/MM/YYYY): ");
+        printf("\nExpiry Date : ");
         printf("\nYear: ");
        do {
             scanf("%d", &st.expiry_date[2]);
