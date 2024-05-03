@@ -32,3 +32,6 @@ medication in the stock.
 The program should provide an interactive menu allowing the user to select these different
 options. Ensure proper handling of user inputs and provide appropriate error or warning
 messages.
+
+
+// username : nour , password:maria
