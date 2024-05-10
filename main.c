@@ -107,7 +107,7 @@ int a=0,i=0;
 	    i++;
 	}
 	pword[i]='\0';
-	i=0;
+	i=0;      // you can add here a customized username and password for your program (by replacing nour with your username and maria with your password)
 		if(strcmp(uname,"nour")==0 && strcmp(pword,"maria")==0)
 	{
 	printf("  \n\n\n       WELCOME TO PRODUCT MANAGEMENT SYSTEM !!!! LOGIN IS SUCCESSFUL");
