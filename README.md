@@ -1,5 +1,5 @@
 TP Project : Pharmaceutical Stock Management
-Develop a program in C language to assist a pharmacy in managing its stock of
+ a program in C language to assist a pharmacy in managing its stock of
 medications. The program should allow the user to perform the following operations:
 
 1. Add a new medication to the stock:
